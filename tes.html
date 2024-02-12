@@ -1,224 +1,195 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Soal Penjumlahan dan Perkalian</title>
-    <style>
-        body {
-            font-family: 'Roboto', sans-serif;
-        }
-        
-        #border {
-            border: 30px solid green;
-            position: absolute;
-            top: 0;
-            right: 0;
-        }
-        
-        #refreshBtn {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-        }
-        
-        .container {
-            max-width: 80%;
-            margin: 0 auto;
-            text-align: center;
-        }
-        
-        #logo {
-            max-width: 10%;
-        }
-        
-        #questionNumber {
-            font-size: 36px;
-        }
-        
-        #question {
-            font-size: 24px;
-        }
-        
-        .answerBtn {
-            font-size: 18px;
-            padding: 10px 20px;
-            margin: 10px;
-        }
-        
-        #countdown {
-            font-size: 24px;
-            margin-top: 20px;
-        }
-        
-        #checkResultsBtn {
-            font-size: 18px;
-            margin-top: 20px;
-            padding: 10px 20px;
-        }
-    </style>
-    <script>
-        var currentQuestion = 1;
-        var correctAnswers = 0;
-        var wrongAnswers = 0;
-        var timer;
-        
-        function generateQuestions(operation) {
-            var questionContainer = document.getElementById("questions");
-            questionContainer.innerHTML = "";
-            
-            var questionType = operation === 'addition' ? 'Penjumlahan' : 'Perkalian';
-            document.getElementById("operation").textContent = questionType;
-            
-            for (var i = 1; i <= 1000; i++) {
-                var a = Math.floor(Math.random() * 11);
-                var b = Math.floor(Math.random() * 11);
-                
-                var questionPage = document.createElement("div");
-                questionPage.id = "question_" + i;
-                questionPage.style.display = "none";
-                
-                var questionNumberElement = document.createElement("p");
-                questionNumberElement.id = "questionNumber";
-                questionNumberElement.textContent = "Soal " + i;
-                questionPage.appendChild(questionNumberElement);
-                
-                var questionElement = document.createElement("p");
-                questionElement.id = "question";
-                questionElement.textContent = "Berapakah " + a + " " + (operation === 'addition' ? '+' : 'x') + " " + b + " ?";
-                questionPage.appendChild(questionElement);
-                
-                var answer0Btn = document.createElement("button");
-                answer0Btn.classList.add("answerBtn");
-                answer0Btn.textContent = "0";
-                answer0Btn.addEventListener("click", function() {
-                    checkAnswer(0);
-                });
-                questionPage.appendChild(answer0Btn);
-                
-                var answer1Btn = document.createElement("button");
-                answer1Btn.classList.add("answerBtn");
-                answer1Btn.textContent = "1";
-                answer1Btn.addEventListener("click", function() {
-                    checkAnswer(1);
-                });
-                questionPage.appendChild(answer1Btn);
-                
-                questionContainer.appendChild(questionPage);
-            }
-            
-            document.getElementById("question_1").style.display = "block";
-            startTimer();
-        }
-        
-        function checkAnswer(answer) {
-            var currentAnswer = answer;
-            var currentQuestionPage = document.getElementById("question_" + currentQuestion);
-            var nextQuestionPage = document.getElementById("question_" + (currentQuestion + 1));
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Test Psikotest Angka Hilang</title>
+<style>
+    body, html {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        flex-direction: column;
+        text-align: center;
+    }
 
-            var correctAnswer = (currentQuestion % 2);
+    .container {
+        width: 90%;
+        max-width: 600px; /* Adjust based on your preference */
+    }
 
-            if (currentAnswer === correctAnswer) {
-                correctAnswers++;
-            } else {
-                wrongAnswers++;
-            }
+    #userInput input[type="text"], #userInput button, #pilihanJawaban button {
+        margin: 10px;
+        padding: 8px;
+        cursor: pointer;
+    }
 
-            currentQuestionPage.style.display = "none";
+    .jawabanBtn:focus {
+        background-color: #4CAF50; /* Green */
+        color: white;
+    }
 
-            if (nextQuestionPage) {
-                nextQuestionPage.style.display = "block";
-                currentQuestion++;
-            } else {
-                clearInterval(timer);
-                showResults();
-            }
-        }
-        
-        function startTimer() {
-            var timeLeft = 3600;
-            timer = setInterval(function() {
-                var minutes = Math.floor(timeLeft / 60);
-                var seconds = timeLeft % 60;
-                
-                document.getElementById("countdown").textContent = "Waktu Tersisa: " + minutes + " menit " + seconds + " detik";
-                
-                if (timeLeft === 0) {
-                    clearInterval(timer);
-                    showResults();
-                }
-                
-                timeLeft--;
-            }, 1000);
-        }
-        
-        function showResults() {
-            var resultsContainer = document.getElementById("results");
-            resultsContainer.innerHTML = "";
-            
-            var totalQuestions = correctAnswers + wrongAnswers;
-            
-            var correctAnswersElement = document.createElement("p");
-            correctAnswersElement.textContent = "Total Jawaban Benar: " + correctAnswers;
-            resultsContainer.appendChild(correctAnswersElement);
-            
-            var wrongAnswersElement = document.createElement("p");
-            wrongAnswersElement.textContent = "Total Jawaban Salah: " + wrongAnswers;
-            resultsContainer.appendChild(wrongAnswersElement);
-            
-            resultsContainer.style.display = "block";
-        }
-        
-        function exportResults() {
-            var name = document.getElementById("name").value;
-            var className = document.getElementById("class").value;
-            var operation = document.getElementById("operation").textContent;
-            
-            var exportData = "Nama: " + name + "\n";
-            exportData += "Kelas: " + className + "\n";
-            exportData += "Pilihan Soal: " + operation + "\n";
-            exportData += "Total Jawaban Benar: " + correctAnswers + "\n";
-            exportData += "Total Jawaban Salah: " + wrongAnswers + "\n";
-            
-            var element = document.createElement("a");
-            element.setAttribute("href", "data:text/plain;charset=utf-8," + encodeURIComponent(exportData));
-            element.setAttribute("download", "hasil.txt");
-            
-            element.style.display = "none";
-            document.body.appendChild(element);
-            
-            element.click();
-            
-            document.body.removeChild(element);
-        }
-    </script>
+    .boldText {
+        font-size: 20px; /* Adjust based on your preference */
+        font-weight: bold;
+    }
+
+    #timer {
+        margin: 20px;
+        font-size: 20px;
+        font-weight: bold;
+    }
+</style>
 </head>
 <body>
-    <div id="border"></div>
-    <button id="refreshBtn">&#8942;</button>
-    
-    <div class="container">
-        <img id="logo" src="LOGO TEKNOS ACEH BIRU.png" alt="Logo Teknos Aceh">
-        
-        <h1>Soal Penjumlahan dan Perkalian</h1>
-        
-        <label for="name">Nama Lengkap:</label>
-        <input type="text" id="name" required>
-        
-        <label for="class">Kelas:</label>
-        <input type="text" id="class" required>
-        
-        <button onclick="generateQuestions('addition')">Penjumlahan</button>
-        <button onclick="generateQuestions('multiplication')">Perkalian</button>
-        
-        <h2 id="operation"></h2>
-        
-        <div id="questions"></div>
-        
-        <div id="results" style="display: none;"></div>
-        
-        <p id="countdown"></p>
-        
-        <button id="checkResultsBtn" onclick="exportResults()">Cek Hasil</button>
+<div class="container">
+    <h1>TEST PSIKOTEST ANGKA HILANG</h1>
+    <div id="userInput">
+        <input type="text" id="namaLengkap" placeholder="Nama Lengkap">
+        <input type="text" id="kelas" placeholder="Kelas">
+        <button id="startBtn">Mulai</button>
     </div>
+    <div id="testContainer" style="display:none;">
+        <div id="timer" class="boldText"></div>
+        <p id="kolomSoal" class="boldText"></p>
+        <p id="nomorSoal" class="boldText"></p>
+        <p id="soal" class="boldText"></p>
+        <div id="jawabanContainer"></div>
+        <div id="pilihanJawaban">
+            <button class="jawabanBtn" data-value="A">A</button>
+            <button class="jawabanBtn" data-value="B">B</button>
+            <button class="jawabanBtn" data-value="C">C</button>
+            <button class="jawabanBtn" data-value="D">D</button>
+            <button class="jawabanBtn" data-value="E">E</button>
+        </div>
+    </div>
+</div>
+<script>
+    document.getElementById('startBtn').addEventListener('click', startTest);
 
+    let currentSoalIndex = 0;
+    let currentKolom = 1;
+    let skorPerKolom = {};
+    let timer, countdown;
+    const totalKolom = 10; 
+    let soalSet = [];
+    let nama, kelas;
+    let tidakDijawab = 0;
+
+    function startTest() {
+        nama = document.getElementById('namaLengkap').value;
+        kelas = document.getElementById('kelas').value;
+        document.getElementById('userInput').style.display = 'none';
+        document.getElementById('testContainer').style.display = 'block';
+        generateSoalSet();
+        displaySoal();
+        startTimer(60); // 1 menit per kolom
+    }
+
+    function generateSoalSet() {
+        for (let k = 1; k <= totalKolom; k++) {
+            let numbers = Array.from({length: 5}, (_, i) => i + 1 + (k-1)*5);
+            shuffle(numbers);
+            for (let i = 0; i < 50; i++) {
+                let soalNumbers = numbers.slice();
+                soalNumbers.splice(Math.floor(Math.random() * soalNumbers.length), 1);
+                soalSet.push({kolom: k, numbers: numbers, soalNumbers: soalNumbers, missing: numbers.find(num => !soalNumbers.includes(num))});
+            }
+        }
+    }
+
+    function displaySoal() {
+        if (currentSoalIndex >= soalSet.length) {
+            endTest();
+            return;
+        }
+        const soal = soalSet[currentSoalIndex];
+        document.getElementById('kolomSoal').innerHTML = `Kolom ${soal.kolom}<br>${soal.numbers.join(' ')}`;
+        document.getElementById('nomorSoal').innerHTML = `Soal ${currentSoalIndex + 1}`;
+        document.getElementById('soal').innerHTML = `${soal.soalNumbers.join(' ')}<br>A B C D E`;
+        setupJawabanHandlers(soal.missing, soal.kolom);
+    }
+
+    function setupJawabanHandlers(correctAnswer, kolom) {
+        if (!skorPerKolom[kolom]) skorPerKolom[kolom] = {benar: 0, salah: 0, tidakDijawab: 0};
+        const buttons = document.querySelectorAll('.jawabanBtn');
+        buttons.forEach(button => {
+            button.onclick = () => {
+                checkJawaban(correctAnswer, button.getAttribute('data-value'), kolom);
+            };
+        });
+    }
+
+    function checkJawaban(correctAnswer, selectedAnswer, kolom) {
+        const answerMap = ['A', 'B', 'C', 'D', 'E'];
+        const selectedNumber = soalSet[currentSoalIndex].numbers[answerMap.indexOf(selectedAnswer)] || 5 + (currentKolom-1)*5;
+        if (selectedNumber === correctAnswer) {
+            skorPerKolom[kolom].benar++;
+        } else {
+            skorPerKolom[kolom].salah++;
+        }
+        currentSoalIndex++;
+        if (currentSoalIndex % 50 === 0) {
+            currentKolom++;
+            clearInterval(timer);
+            startTimer(60); // Reset timer untuk kolom berikutnya
+        }
+        displaySoal();
+    }
+
+    function startTimer(duration) {
+        let time = duration;
+        countdown = document.getElementById('timer');
+        countdown.innerHTML = `Waktu: ${time} detik`;
+        timer = setInterval(() => {
+            time--;
+            countdown.innerHTML = `Waktu: ${time} detik`;
+            if (time <= 0) {
+                clearInterval(timer);
+                skorPerKolom[currentKolom].tidakDijawab += 50 - (skorPerKolom[currentKolom].benar + skorPerKolom[currentKolom].salah);
+                currentSoalIndex = currentKolom * 50; // Langsung loncat ke kolom berikutnya
+                currentKolom++;
+                if (currentKolom <= totalKolom) {
+                    startTimer(60); // Start timer untuk kolom baru
+                    displaySoal();
+                } else {
+                    endTest();
+                }
+            }
+        }, 1000);
+    }
+
+    function shuffle(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+    }
+
+    function endTest() {
+        clearInterval(timer);
+        let result = `Nama: ${nama}\nKelas: ${kelas}\n`;
+        for (let i = 1; i <= totalKolom; i++) {
+            result += `Kolom ${i}: B=${skorPerKolom[i]?.benar || 0}, S=${skorPerKolom[i]?.salah || 0}, Tidak Dijawab=${skorPerKolom[i]?.tidakDijawab || 0}\n`;
+        }
+        alert(result);
+        exportResults(result);
+    }
+
+    function exportResults(result) {
+        const blob = new Blob([result], { type: 'text/plain' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'hasil_test_psikotest.txt';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+    }
+</script>
 </body>
 </html>
