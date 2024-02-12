@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Soal Penjumlahan dan Perkalian</title>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+        }
+        
+        #border {
+            border: 30px solid green;
+            position: absolute;
+            top: 0;
+            right: 0;
+        }
+        
+        #refreshBtn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+        
+        .container {
+            max-width: 80%;
+            margin: 0 auto;
+            text-align: center;
+        }
+        
+        #logo {
+            max-width: 10%;
+        }
+        
+        #questionNumber {
+            font-size: 36px;
+        }
+        
+        #question {
+            font-size: 24px;
+        }
+        
+        .answerBtn {
+            font-size: 18px;
+            padding: 10px 20px;
+            margin: 10px;
+        }
+        
+        #countdown {
+            font-size: 24px;
+            margin-top: 20px;
+        }
+        
+        #checkResultsBtn {
+            font-size: 18px;
+            margin-top: 20px;
+            padding: 10px 20px;
+        }
+    </style>
+    <script>
+        var currentQuestion = 1;
+        var correctAnswers = 0;
+        var wrongAnswers = 0;
+        var timer;
+        
+        function generateQuestions(operation) {
+            var questionContainer = document.getElementById("questions");
+            questionContainer.innerHTML = "";
+            
+            var questionType = operation === 'addition' ? 'Penjumlahan' : 'Perkalian';
+            document.getElementById("operation").textContent = questionType;
+            
+            for (var i = 1; i <= 1000; i++) {
+                var a = Math.floor(Math.random() * 11);
+                var b = Math.floor(Math.random() * 11);
+                
+                var questionPage = document.createElement("div");
+                questionPage.id = "question_" + i;
+                questionPage.style.display = "none";
+                
+                var questionNumberElement = document.createElement("p");
+                questionNumberElement.id = "questionNumber";
+                questionNumberElement.textContent = "Soal " + i;
+                questionPage.appendChild(questionNumberElement);
+                
+                var questionElement = document.createElement("p");
+                questionElement.id = "question";
+                questionElement.textContent = "Berapakah " + a + " " + (operation === 'addition' ? '+' : 'x') + " " + b + " ?";
+                questionPage.appendChild(questionElement);
+                
+                var answer0Btn = document.createElement("button");
+                answer0Btn.classList.add("answerBtn");
+                answer0Btn.textContent = "0";
+                answer0Btn.addEventListener("click", function() {
+                    checkAnswer(0);
+                });
+                questionPage.appendChild(answer0Btn);
+                
+                var answer1Btn = document.createElement("button");
+                answer1Btn.classList.add("answerBtn");
+                answer1Btn.textContent = "1";
+                answer1Btn.addEventListener("click", function() {
+                    checkAnswer(1);
+                });
+                questionPage.appendChild(answer1Btn);
+                
+                questionContainer.appendChild(questionPage);
+            }
+            
+            document.getElementById("question_1").style.display = "block";
+            startTimer();
+        }
+        
+        function checkAnswer(answer) {
+            var currentAnswer = answer;
+            var currentQuestionPage = document.getElementById("question_" + currentQuestion);
+            var nextQuestionPage = document.getElementById("question_" + (currentQuestion + 1));
+
+            var correctAnswer = (currentQuestion % 2);
+
+            if (currentAnswer === correctAnswer) {
+                correctAnswers++;
+            } else {
+                wrongAnswers++;
+            }
+
+            currentQuestionPage.style.display = "none";
+
+            if (nextQuestionPage) {
+                nextQuestionPage.style.display = "block";
+                currentQuestion++;
+            } else {
+                clearInterval(timer);
+                showResults();
+            }
+        }
+        
+        function startTimer() {
+            var timeLeft = 3600;
+            timer = setInterval(function() {
+                var minutes = Math.floor(timeLeft / 60);
+                var seconds = timeLeft % 60;
+                
+                document.getElementById("countdown").textContent = "Waktu Tersisa: " + minutes + " menit " + seconds + " detik";
+                
+                if (timeLeft === 0) {
+                    clearInterval(timer);
+                    showResults();
+                }
+                
+                timeLeft--;
+            }, 1000);
+        }
+        
+        function showResults() {
+            var resultsContainer = document.getElementById("results");
+            resultsContainer.innerHTML = "";
+            
+            var totalQuestions = correctAnswers + wrongAnswers;
+            
+            var correctAnswersElement = document.createElement("p");
+            correctAnswersElement.textContent = "Total Jawaban Benar: " + correctAnswers;
+            resultsContainer.appendChild(correctAnswersElement);
+            
+            var wrongAnswersElement = document.createElement("p");
+            wrongAnswersElement.textContent = "Total Jawaban Salah: " + wrongAnswers;
+            resultsContainer.appendChild(wrongAnswersElement);
+            
+            resultsContainer.style.display = "block";
+        }
+        
+        function exportResults() {
+            var name = document.getElementById("name").value;
+            var className = document.getElementById("class").value;
+            var operation = document.getElementById("operation").textContent;
+            
+            var exportData = "Nama: " + name + "\n";
+            exportData += "Kelas: " + className + "\n";
+            exportData += "Pilihan Soal: " + operation + "\n";
+            exportData += "Total Jawaban Benar: " + correctAnswers + "\n";
+            exportData += "Total Jawaban Salah: " + wrongAnswers + "\n";
+            
+            var element = document.createElement("a");
+            element.setAttribute("href", "data:text/plain;charset=utf-8," + encodeURIComponent(exportData));
+            element.setAttribute("download", "hasil.txt");
+            
+            element.style.display = "none";
+            document.body.appendChild(element);
+            
+            element.click();
+            
+            document.body.removeChild(element);
+        }
+    </script>
+</head>
+<body>
+    <div id="border"></div>
+    <button id="refreshBtn">&#8942;</button>
+    
+    <div class="container">
+        <img id="logo" src="LOGO TEKNOS ACEH BIRU.png" alt="Logo Teknos Aceh">
+        
+        <h1>Soal Penjumlahan dan Perkalian</h1>
+        
+        <label for="name">Nama Lengkap:</label>
+        <input type="text" id="name" required>
+        
+        <label for="class">Kelas:</label>
+        <input type="text" id="class" required>
+        
+        <button onclick="generateQuestions('addition')">Penjumlahan</button>
+        <button onclick="generateQuestions('multiplication')">Perkalian</button>
+        
+        <h2 id="operation"></h2>
+        
+        <div id="questions"></div>
+        
+        <div id="results" style="display: none;"></div>
+        
+        <p id="countdown"></p>
+        
+        <button id="checkResultsBtn" onclick="exportResults()">Cek Hasil</button>
+    </div>
+
+</body>
+</html>
